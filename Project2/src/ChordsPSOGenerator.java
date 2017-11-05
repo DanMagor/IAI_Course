@@ -3,17 +3,17 @@ import java.util.Random;
 /**
  * Created by Anton Skudarnov on 05.11.2017.
  */
-public class ChordPSO {
+public class ChordsPSOGenerator {
 
 
     private final int C1 = 2, C2 = 2, M = 1;
 
     private final static int P = 10000; //Number of particles
-    private final static int I = 100; //Number of Iterations
+  //  private final static int I = 100; //Number of Iterations
 
     private final static int MIN_NOTE = 48; //Min Note for Chord
-    private final static int MAX_NOTE = 72; //Max Note for Chord
-    private final int C = 16; //Total number of chords
+    private final static int MAX_NOTE = 96; //Max Note for Chord
+//    private final int C = 16; //Total number of chords
     private static Random chordRandom;
 
 
@@ -24,7 +24,7 @@ public class ChordPSO {
     private int dominant;
     private int[] gamma;
 
-    public ChordPSO(int tone, String tonality) {
+    public ChordsPSOGenerator(int tone, String tonality) {
         chordRandom = new Random();
         finalChord = new int[3];
         this.tonality = tonality;
@@ -32,11 +32,6 @@ public class ChordPSO {
         subdominant = tonic + 5;
         dominant = tonic + 7;
 
-        Particle[] particles = new Particle[P];
-        for (int i = 0; i < P; i++) {
-            particles[i] = new Particle();
-        }
-        Particle.GlobalBest = particles[0].chord;
         gamma = new int[]{};
         if (tonality.equals("maj")) {
             gamma = new int[]{tonic, tonic + 2, tonic + 4,/*tonic+5,*/ tonic + 7, tonic + 9,/*tonic+11*/};
@@ -44,9 +39,23 @@ public class ChordPSO {
             gamma = new int[]{tonic,/*tonic+2,*/tonic + 3, tonic + 5, tonic + 7,/*tonic+8,*/tonic + 10};
         }
 
+
+
+
+
+    }
+
+    public int[] generateChord(){
+        Particle[] particles = new Particle[P];
+        for (int i = 0; i < P; i++) {
+            particles[i] = new Particle();
+        }
+        Particle.GlobalBest = particles[0].chord;
+
+
         //Optimization;
 
-      while (calculateFitness(Particle.GlobalBest)!=0) {
+        while (calculateFitness(Particle.GlobalBest)!=0) {
             for (Particle p : particles) {
                 for (int i = 0; i < 3; i++) {
                     p.speed[i] = (int) (M * p.speed[i] + C1 * chordRandom.nextDouble() * (p.localBest[i] - p.chord[i]) +
@@ -61,11 +70,10 @@ public class ChordPSO {
                     Particle.GlobalBest = p.chord;
             }
         }
-
         for (int i = 0; i < Particle.GlobalBest.length; i++) {
             finalChord[i] = Particle.GlobalBest[i];
         }
-
+        return finalChord;
     }
 
 

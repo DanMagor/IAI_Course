@@ -9,19 +9,30 @@ public class Main {
 //        MusicGenerator.makeMelody();
 
         String melody = "";
+        String scale = "min";
         Random random = new Random();
-        int tonic = random.nextInt(60 - 48 + 1) + 48;
+        int tonic = random.nextInt(72 - 48 + 1) + 48;
+        if(random.nextDouble()<0.5){
+            scale = "maj";
+        }
         for (int i = 0; i < 16; i++) {
-            ChordPSO temp = new ChordPSO(tonic, "maj");
-            melody += "V1 " + temp.finalChord[0] + "q ";
-            melody += "V2 " + temp.finalChord[1] + "q ";
-            melody += "V3 " + temp.finalChord[2] + "q ";
+            ChordsPSOGenerator chord = new ChordsPSOGenerator(tonic, scale);
+            MelodyPSOGenerator notes = new MelodyPSOGenerator(tonic,scale);
+            int j = 0;
+            for (int note:chord.generateChord()) {
 
+                melody += "V" + j +" " + note + "q ";
+                j++;
+            }
+            for (int note:notes.generateMelody()){
+                melody+="V" + j + " " + note + "i ";
+                j++;
+            }
         }
         Player player = new Player();
-        System.out.println(tonic);
+        System.out.println(tonic + scale);
         System.out.println(melody);
-        player.play("" + melody + melody + melody +melody);
+        player.play("" + melody);
 
     }
 }
