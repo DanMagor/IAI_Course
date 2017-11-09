@@ -7,6 +7,8 @@ import java.util.Random;
 
 /**
  * Created by Anton Skudarnov on 03.11.2017.
+ *
+ *Music Generator Based on Random
  */
 
 
